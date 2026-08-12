@@ -8,6 +8,7 @@ Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web 
 
 ## Istoric versiuni
 
+- **v4** — Corectat layout-ul barei de sus pe telefoane Android: numele lung al aplicației (Ευαγγελισμός) împingea butonul de Setări (⚙) pe un rând nou, micșorând spațiul aplicației. Numele se trunchiază acum cu „..." dacă nu încape, iar pe ecrane înguste (sub 420px) controalele de zoom din bara de sus se ascund (rămân identic disponibile în Setări) — mic/AI/setări rămân mereu pe același rând.
 - **v3** — Vocabular extins: de la 178 la 794 de cuvinte (650 A1 + 144 început de A2), lematizate și traduse manual din rangurile de frecvență 400–2500. Adăugată funcția de detectare a vocii grecești lipsă din sistem, cu ghidare specifică per platformă (Windows/Android — deschidere directă a ecranului de setări; iOS/macOS — instrucțiuni text, din limitări de browser).
 - **v2** — Redenumire completă: Ευαγγελισμός (Buna Vestire), dedicată părintelui Daniel. Corectate bug-uri de portare rămase (clasele CSS de gen nu se mapau corect la ο/η/το, referințe reziduale „DE"/„7000 de cuvinte" moștenite din aplicația germană, în secțiunea de Ajutor).
 - **v1** — Prima versiune funcțională, portată din arhitectura Karteikarten (germană): motor de flashcards, căutare/adăugare cuvinte, backup, modul AI (Claude) adaptat pentru RO↔EL, iconițe cu steag elen. Vocabular de test: 178 cuvinte A1, lematizate și traduse manual.

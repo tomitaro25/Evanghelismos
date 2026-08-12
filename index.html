@@ -49,13 +49,15 @@
 
   /* ---------- top bar ---------- */
   .topbar{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:6px 16px 12px; border-bottom:2px solid var(--ink); flex-shrink:0;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    padding:6px 16px 12px; border-bottom:2px solid var(--ink); flex-shrink:0; gap:8px;
   }
-  .brand{ font-family:'Special Elite', monospace; font-size:18.4px; line-height:1.1; }
+  .brand{ font-family:'Special Elite', monospace; font-size:18.4px; line-height:1.1;
+    min-width:0; flex:1 1 auto; }
+  .brand-title{ display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .brand small{ display:block; font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:1.5px;
-    text-transform:uppercase; color:var(--ink-soft); margin-top:3px; }
-  .top-right{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    text-transform:uppercase; color:var(--ink-soft); margin-top:3px; white-space:nowrap; }
+  .top-right{ display:flex; align-items:center; gap:6px; flex-wrap:nowrap; justify-content:flex-end; flex-shrink:0; }
   .zoom-controls{ display:flex; gap:3px; align-items:center; }
   .zoom-percent{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--ink-soft); min-width:32px; text-align:center; }
   .zoom-btn{
@@ -64,13 +66,22 @@
     cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink);
   }
   .zoom-btn:active{ background:var(--paper-dark); }
-  .stats{ font-family:'IBM Plex Mono', monospace; font-size:11px; text-align:right; color:var(--ink-soft); line-height:1.4; }
+  .stats{ font-family:'IBM Plex Mono', monospace; font-size:11px; text-align:right; color:var(--ink-soft); line-height:1.4; white-space:nowrap; }
   .stats b{ color:var(--ink); font-size:13.6px; }
   .gear-btn{
     width:40px; height:40px; border-radius:50%; border:1.5px solid var(--ink); background:var(--paper);
     font-size:18.4px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
   }
   .gear-btn:active{ background:var(--paper-dark); }
+  /* pe ecrane inguste (majoritatea telefoanelor Android), ascundem controalele de zoom din bara de sus -
+     raman disponibile identic in Setari - ca sa incapa mereu mic/AI/setari pe acelasi rand */
+  @media (max-width: 420px){
+    .topbar .zoom-controls{ display:none; }
+    .brand{ font-size:16px; }
+    .top-right{ gap:4px; }
+    .stats{ font-size:9.5px; }
+    .gear-btn{ width:36px; height:36px; font-size:16px; }
+  }
   .summary-line{
     padding:4px 16px 0; font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--ink-soft);
     text-align:center; flex-shrink:0;
@@ -280,7 +291,7 @@
 
 <div class="flag-banner"></div>
 <div class="topbar">
-  <div class="brand">Ευαγγελισμός<small>EL ⇄ RO · A1-A2</small></div>
+  <div class="brand"><span class="brand-title">Ευαγγελισμός</span><small>EL ⇄ RO · A1-A2</small></div>
   <div class="top-right">
     <div class="zoom-controls">
       <button class="zoom-btn zoom-out-btn" aria-label="Micșorează fontul">A−</button>
