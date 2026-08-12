@@ -280,7 +280,7 @@
 
 <div class="flag-banner"></div>
 <div class="topbar">
-  <div class="brand">Ευαγγελισμός<small>EL ⇄ RO · A1</small></div>
+  <div class="brand">Ευαγγελισμός<small>EL ⇄ RO · A1-A2</small></div>
   <div class="top-right">
     <div class="zoom-controls">
       <button class="zoom-btn zoom-out-btn" aria-label="Micșorează fontul">A−</button>
@@ -371,7 +371,7 @@
     </div>
     <div class="sheet-section help-text">
       <div class="sheet-label">Adaugă cuvinte care lipsesc din listă</div>
-      <p>Dacă o <b>căutare scrisă</b> nu găsește nimic, aplicația îți oferă să-l adaugi manual, la nivelul „Cuvintele mele". Toggle-ul RO/DE de deasupra câmpului de căutare decide ce parte a cuvântului o știi deja (cea în care ai căutat).</p>
+      <p>Dacă o <b>căutare scrisă</b> nu găsește nimic, aplicația îți oferă să-l adaugi manual, la nivelul „Cuvintele mele". Toggle-ul RO/EL de deasupra câmpului de căutare decide ce parte a cuvântului o știi deja (cea în care ai căutat).</p>
       <p>Verifici traducerea pe Glosbe (linkul apare automat), copiezi cuvântul sau expresia dorită, revii, apeși butonul auriu <b>„Lipește din clipboard"</b> — câmpul se completează automat, dar rămâne editabil. Poți repeta lipirea oricând, se resetează curat de fiecare dată.</p>
       <p>Cuvintele adăugate rămân salvate permanent pe acest dispozitiv, apar ca nivel separat de exersat, și pot fi exportate oricând ca fișier CSV, din „Date &amp; fișiere".</p>
       <p><i>Notă:</i> căutarea vocală funcționează la fel — dacă cuvântul recunoscut nu e în listă, ți se oferă și acolo să-l adaugi manual.</p>
@@ -400,7 +400,7 @@
         <span class="chip level-chip" data-level="MYWORDS" id="myWordsChip">Cuvintele mele (0)</span>
         <span class="chip" id="customChip" data-level="Custom" style="opacity:0.4;">Custom (0)</span>
       </div>
-      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — doar A1 populat momentan, ~178 cuvinte)</div>
+      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — A1 (650 cuvinte) și început de A2 (144 cuvinte) populate momentan, B1/B2 urmează)</div>
     </div>
 
     <div class="sheet-section">
@@ -507,7 +507,7 @@
   <details class="sheet-group" id="aiHelpDetails">
     <summary>❓ Ajutor — AI</summary>
     <div class="sheet-section help-text">
-      <p>O funcție separată de restul aplicației, cu propria ta cheie API de la Anthropic (Claude) — traducerea nu se limitează la cele ~7000 de cuvinte din listă, ci acceptă orice text, dictat sau scris, plus imagini cu text (poze, screenshot-uri).</p>
+      <p>O funcție separată de restul aplicației, cu propria ta cheie API de la Anthropic (Claude) — traducerea nu se limitează la cuvintele din listă, ci acceptă orice text, dictat sau scris, plus imagini cu text (poze, screenshot-uri).</p>
       <p><b>Cum obții o cheie API</b> (gratuită de generat, plata se face separat, per folosire — nu-i legată de un eventual abonament Claude Pro de pe claude.ai, sunt produse diferite):</p>
       <p>1. Mergi pe <b>console.anthropic.com</b> (sau <b>platform.claude.com</b> — e același loc)<br>
       2. Creează cont / autentifică-te (poți folosi același email ca la claude.ai, dar e un cont separat)<br>
@@ -2533,9 +2533,52 @@ if(voiceSelect){
     saveVoicePref(selectedVoiceURI);
   });
 }
+/* ---------- detectare voce greaca lipsa + ghidare spre pachetul de limba al sistemului ---------- */
+function detectPlatform(){
+  const ua = navigator.userAgent || '';
+  const platform = navigator.platform || '';
+  if(/Android/i.test(ua)) return 'android';
+  if(/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+  if(/Win/i.test(platform) || /Windows/i.test(ua)) return 'windows';
+  if(/Mac/i.test(platform) && !/iPhone|iPad|iPod/i.test(ua)) return 'macos';
+  return 'unknown';
+}
+function offerGreekVoiceInstall(){
+  const platform = detectPlatform();
+  const messages = {
+    windows: 'Nu am găsit nicio voce grecească pe acest calculator.\n\nPe Windows, o poți instala din Setări → Ora și limba → Limbă și regiune → Adaugă o limbă → Ελληνικά (Greacă) — la instalare, bifează și opțiunea de sinteză vocală (text-to-speech), dacă e oferită separat.\n\nVrei să deschid acum pagina de Setări?',
+    android: 'Nu am găsit nicio voce grecească pe acest telefon.\n\nPe Android, o poți instala din Setări → Sistem → Limbi și introducere text → Ieșire sintetizare vocală (Text-to-speech) → alege motorul (de obicei Google) → Instalează date vocale → Greacă.\n\nVrei să deschid acum ecranul de setări pentru sinteza vocală?',
+    ios: 'Nu am găsit nicio voce grecească pe acest dispozitiv.\n\nPe iPhone/iPad, o poți instala din Setări → Accesibilitate → Conținut vorbit → Voci → adaugă o voce nouă → Greacă.\n\nDin păcate, Safari nu permite deschiderea automată a acestui ecran din aplicație — trebuie să mergi manual în Setări.',
+    macos: 'Nu am găsit nicio voce grecească pe acest Mac.\n\nO poți instala din Preferințe Sistem (sau Setări Sistem) → Accesibilitate → Conținut vorbit → Voce sistem → Gestionează vocile → Greacă.\n\nDin păcate, browserul nu permite deschiderea automată a acestui ecran din aplicație — trebuie să mergi manual în Preferințe Sistem.',
+    unknown: 'Nu am găsit nicio voce grecească pe acest dispozitiv. Verifică setările de limbă/accesibilitate ale sistemului tău de operare și instalează pachetul de limbă greacă (cu opțiunea de sinteză vocală, dacă e disponibilă separat).'
+  };
+  const promptMsg = messages[platform] || messages.unknown;
+  // deschidere directa a ecranului de setari: functioneaza doar pe Windows si Android (scheme URI recunoscute de OS);
+  // pe iOS/macOS, browserele nu permit asta din motive de securitate - ramane doar instructiunea text
+  const canDeepLink = (platform === 'windows' || platform === 'android');
+  if(canDeepLink){
+    const ok = confirm(promptMsg);
+    if(ok){
+      if(platform === 'windows'){
+        window.location.href = 'ms-settings:regionlanguage';
+      } else if(platform === 'android'){
+        window.location.href = 'intent://#Intent;action=com.android.settings.TTS_SETTINGS;end';
+      }
+    }
+  } else {
+    alert(promptMsg);
+  }
+}
+
 const testVoiceBtn = document.getElementById('testVoiceBtn');
 if(testVoiceBtn){
-  testVoiceBtn.addEventListener('click', () => speak('σπίτι'));
+  testVoiceBtn.addEventListener('click', () => {
+    if(availableVoices.length === 0){
+      offerGreekVoiceInstall();
+      return;
+    }
+    speak('σπίτι');
+  });
 }
 
 /* ---------- service worker registration (enables offline + installability) ---------- */

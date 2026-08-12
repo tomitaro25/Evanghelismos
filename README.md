@@ -4,12 +4,18 @@ Aplicație dedicată părintelui Daniel.
 
 Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web App) instalabilă pe telefon.
 
-**⚠️ Versiune de test (v0.1)** — vocabularul conține momentan doar ~178 de cuvinte de nivel A1 (cele mai frecvente cuvinte din greaca modernă), ca punct de plecare pentru validarea arhitecturii înainte de construirea vocabularului complet A1–B2. Modulele „Antonime & Sinonime" și „Conjugare verbe" (prezente în aplicația soră de germană) nu sunt încă implementate — sunt planificate pentru o fază separată, cu date construite specific pentru greacă.
+**⚠️ Versiune de test (v3)** — vocabularul conține momentan 794 de cuvinte (650 A1 + 144 început de A2), construite din rangurile de frecvență ~1-2500 ale limbii grecești moderne. Nivelurile B1/B2 nu sunt încă populate. Modulele „Antonime & Sinonime" și „Conjugare verbe" (prezente în aplicația soră de germană) nu sunt încă implementate — sunt planificate pentru o fază separată, cu date construite specific pentru greacă.
+
+## Istoric versiuni
+
+- **v3** — Vocabular extins: de la 178 la 794 de cuvinte (650 A1 + 144 început de A2), lematizate și traduse manual din rangurile de frecvență 400–2500. Adăugată funcția de detectare a vocii grecești lipsă din sistem, cu ghidare specifică per platformă (Windows/Android — deschidere directă a ecranului de setări; iOS/macOS — instrucțiuni text, din limitări de browser).
+- **v2** — Redenumire completă: Ευαγγελισμός (Buna Vestire), dedicată părintelui Daniel. Corectate bug-uri de portare rămase (clasele CSS de gen nu se mapau corect la ο/η/το, referințe reziduale „DE"/„7000 de cuvinte" moștenite din aplicația germană, în secțiunea de Ajutor).
+- **v1** — Prima versiune funcțională, portată din arhitectura Karteikarten (germană): motor de flashcards, căutare/adăugare cuvinte, backup, modul AI (Claude) adaptat pentru RO↔EL, iconițe cu steag elen. Vocabular de test: 178 cuvinte A1, lematizate și traduse manual.
 
 ## Ce conține
 
 - `index.html` — aplicația
-- `vocab-data.js` — baza de vocabular (A1, ~178 cuvinte, versiune de test)
+- `vocab-data.js` — baza de vocabular (A1: 650 cuvinte, A2: 144 cuvinte — versiune de test, în extindere)
 - `manifest.json` — configurare PWA (nume, iconițe, mod de afișare)
 - `sw.js` — service worker (funcționare offline)
 - `icon-192.png`, `icon-512.png` (+ variante maskable) — iconițele aplicației, cu accent pe steagul elen (albastru-alb)
@@ -30,7 +36,7 @@ Aceleași funcționalități de bază ca aplicația soră **Karteikarten** (germ
 
 ## Ce lipsește față de aplicația germană (intenționat, fază separată)
 
-- Nivelurile B1/B2/Suplimentar (doar A1 populat momentan)
+- Nivelurile B1/B2/Suplimentar (A1 și început de A2 populate momentan)
 - Modulul „Antonime & Sinonime"
 - Modulul „Conjugare verbe"
 - Vocabular de specialitate (echivalentul „Îngrijire" din aplicația germană)
@@ -44,7 +50,7 @@ Aceleași funcționalități de bază ca aplicația soră **Karteikarten** (germ
 ## Surse și atribuiri
 
 - **Selecția cuvintelor A1** e construită din rangul de frecvență reală de utilizare a limbii grecești moderne, pe baza listei [hermitdave/FrequencyWords](https://github.com/hermitdave/FrequencyWords) (`content/2016/el/el_50k.txt`, derivată din corpus OpenSubtitles), licență **MIT**.
-- Spre deosebire de aplicația franceză (lematizată programatic cu spaCy `fr_core_news_sm`), acest prim lot de 178 de cuvinte a fost **lematizat și verificat integral manual** — formele flexionate din topul de frecvență brut (ex. toate formele lui „a avea": έχω/έχεις/έχει/είχα...) au fost reduse manual la lema corectă. Loturile viitoare, mai mari, vor evalua dacă merită folosit spaCy `el_core_news_sm` (cunoscut cu probleme de nedeterminism la lematizare, per issue-uri publice) sau dacă verificarea manuală rămâne mai eficientă la acest volum.
+- Spre deosebire de aplicația franceză (lematizată programatic cu spaCy `fr_core_news_sm`), toate cele 794 de cuvinte au fost **lematizate și verificate integral manual** — formele flexionate din topul de frecvență brut (ex. toate formele lui „a avea": έχω/έχεις/έχει/είχα...) au fost reduse manual la lema corectă, iar numele proprii și argoul vulgar din corpusul de subtitrări au fost excluse. Loturile viitoare vor evalua dacă merită folosit spaCy `el_core_news_sm` (cunoscut cu probleme de nedeterminism la lematizare, per issue-uri publice) sau dacă verificarea manuală rămâne mai eficientă la acest volum.
 - Traducerile în limba română sunt muncă originală.
 - Genul gramatical (ο/η/το) e marcat manual, per cuvânt.
 - Verbele apar la persoana I singular, prezent, activ (convenția standard grecească de dicționar — greaca modernă nu are infinitiv).

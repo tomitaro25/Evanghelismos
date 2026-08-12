@@ -1,4 +1,4 @@
-const CACHE_NAME = 'evanghelismos-v1';
+const CACHE_NAME = 'evanghelismos-v3';
 const APP_SHELL = [
   './index.html',
   './manifest.json',
