@@ -4,10 +4,14 @@ Aplicație dedicată părintelui Daniel.
 
 Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web App) instalabilă pe telefon.
 
-**⚠️ Versiune de test (v5)** — vocabularul conține 1258 de cuvinte: A1 complet (650) și A2 complet (608), construite din rangurile de frecvență ~1-5000 ale limbii grecești moderne. Nivelurile B1/B2 nu sunt încă populate. Modulele „Antonime & Sinonime" și „Conjugare verbe" (prezente în aplicația soră de germană) nu sunt încă implementate — sunt planificate pentru o fază separată, cu date construite specific pentru greacă.
+**⚠️ Versiune de test (v10)** — vocabularul conține 1858 de cuvinte: A1 (650), A2 (608) și B1 (600) complete. Modulul „Antonime & Sinonime" e implementat (59 perechi antonime + 20 perechi sinonime). Nivelul B2 și modulul „Conjugare verbe" (prezent în aplicația soră de germană) rămân pentru o fază viitoare.
 
 ## Istoric versiuni
 
+- **v11** — Corectată o gaură de siguranță la restaurarea backup-ului: după introducerea prefixelor (v8), un backup vechi (dinainte de v8, cu chei neprefixate) trecea validarea `_app` dar nu restaura de fapt nimic — utilizatorul primea mesajul de succes fără să știe că progresul n-a fost de fapt recuperat. Acum aplicația verifică explicit dacă backup-ul conține măcar o cheie prefixată validă înainte de a cere confirmarea; dacă nu găsește niciuna, oprește procesul cu un mesaj clar („backup dintr-o versiune veche, incompatibil, nu s-a restaurat nimic") în loc de o restaurare falsă. Testat logic pentru 4 scenarii (backup valid, backup vechi neprefixat, aplicație greșită, backup mixt) — toate corecte.
+- **v10** — Adăugat modulul **„Antonime & Sinonime"** (nou, construit de la zero pentru greacă — nu exista înainte în această versiune): 59 perechi de antonime + 20 perechi de sinonime (158 de intrări generate, ambele sensuri), exclusiv în greacă, cu distractori din același pool. Testat programatic (simulare completă de rundă mixtă cu alte niveluri) — zero erori. 17 cuvinte esențiale noi adăugate în vocabularul principal ca suport (,,slab", ,,lent", ,,gol", ,,curat" etc.), B1 ajungând la 600 cuvinte rotund. Total vocabular acum: 1858 cuvinte.
+- **v9** — Vocabular B1 complet (583 cuvinte), aliniat cu aplicația germană (~591). Total acum: 1841 cuvinte (A1: 650, A2: 608, B1: 583), procesate din rangurile de frecvență ~5000–9000. Chip-ul de nivel B1 din interfață era deja pregătit în UI, doar nepopulat — funcționează acum din prima. Rămâne B2 pentru o fază viitoare.
+- **v8** — **Corectare importantă:** toate cele 10 chei de `localStorage` (statistici, „Cuvintele mele", preferințe, streak, istoric AI, cheie API etc.) erau salvate sub nume generice (`wordStats`, `prefs`, `myWords`...), identice cu cele din aplicația germană (Karteikarten). Cum `localStorage` e izolat per **domeniu**, nu per aplicație/pagină, cele două aplicații găzduite pe același domeniu GitHub Pages își amestecau datele — inclusiv istoricul de traduceri AI. Acum toate cheile au prefixul `evanghelismos_`, complet separate. **Notă:** progresul salvat anterior (înainte de v8) rămâne sub cheile vechi, neprefixate, și nu va mai fi citit — practic pornești curat de la această versiune. Aceeași corecție (cu alt prefix, ex. `karteikarten_`) trebuie aplicată și în aplicația germană, ca separarea să fie completă în ambele direcții.
 - **v7** — Corectat bara de sus: fix-ul din v4 ascundea complet controalele de zoom pe ecrane înguste (prea agresiv); acum A−/A+ rămân mereu vizibile pe pagina principală, doar procentul și butonul de resetare (mai puțin esențiale) se ascund sub 420px lățime, ca să nu mai împingă Setările pe rândul următor. Butoanele de zoom din Setări au fost verificate programatic (simulare de click real) și funcționează corect din punct de vedere logic — dacă tot par nefuncționale la testare, cel mai probabil cache-ul service worker-ului servește o versiune veche; e nevoie de reinstalare completă (dezinstalare + instalare din nou) sau golire cache browser, nu doar reîncărcare simplă a paginii.
 - **v6** — Corectat ștampila de răspuns: varianta pentru răspuns greșit era în română (,,GREȘIT"), inconsecventă cu cea corectă (,,ΣΩΣΤΟ!", în greacă). Acum ambele sunt în greacă: `ΣΩΣΤΟ!` / `ΛΑΘΟΣ!`.
 - **v5** — Vocabular A1 și A2 complete (1258 cuvinte total: 650 A1 + 608 A2), aliniat ca volum cu aplicația germană (669 A1 / 591 A2). Procesate rangurile de frecvență ~2500–5000 pentru finalizarea A2. Datele pentru B1 sunt deja extrase, pregătite pentru lotul următor.
@@ -19,7 +23,7 @@ Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web 
 ## Ce conține
 
 - `index.html` — aplicația
-- `vocab-data.js` — baza de vocabular (A1: 650 cuvinte, A2: 608 cuvinte — complete; B1/B2 urmează)
+- `vocab-data.js` — baza de vocabular (A1: 650, A2: 608, B1: 600 — complete; B2 urmează)
 - `manifest.json` — configurare PWA (nume, iconițe, mod de afișare)
 - `sw.js` — service worker (funcționare offline)
 - `icon-192.png`, `icon-512.png` (+ variante maskable) — iconițele aplicației, cu accent pe steagul elen (albastru-alb)
@@ -35,13 +39,13 @@ Aceleași funcționalități de bază ca aplicația soră **Karteikarten** (germ
 - Pronunție audio a cuvintelor grecești (Web Speech API, `el-GR`), cu alegere de voce
 - Link direct către [Glosbe](https://ro.glosbe.com/el/ro) pentru fiecare cuvânt grecesc, ca sursă suplimentară de verificare (dict.cc nu are pereche directă EL-RO)
 - Buton „Sari peste", căutare de cuvinte (scrisă + vocală, cu recunoașterea și eliminarea automată a articolelor grecești), adăugare manuală de cuvinte lipsă, backup complet, prompt de instalare — toate identice funcțional cu aplicația germană
+- **Antonime & Sinonime** — nivel dedicat, exclusiv în greacă (59 perechi de antonime + 20 perechi de sinonime, generate automat în ambele sensuri = 158 de întrebări): vezi un cuvânt grecesc, alegi opusul sau apropiatul ca sens, din 4 variante tot grecești, cu ascultare și Glosbe disponibile pe fiecare după ce răspunzi
 - **🤖 AI (Claude) — traducere liberă** — adaptată complet pentru perechea română-greacă, inclusiv reconstrucția automată a accentuării grecești (τόνος) pierdute la dictarea vocală (echivalentul grecesc al problemei cratimelor din română)
 - Preferințele și statisticile se salvează local, în browser, per dispozitiv
 
 ## Ce lipsește față de aplicația germană (intenționat, fază separată)
 
-- Nivelurile B1/B2/Suplimentar (A1 și A2 complete populate momentan)
-- Modulul „Antonime & Sinonime"
+- Nivelul B2 și „Suplimentar"
 - Modulul „Conjugare verbe"
 - Vocabular de specialitate (echivalentul „Îngrijire" din aplicația germană)
 

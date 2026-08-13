@@ -291,7 +291,7 @@
 
 <div class="flag-banner"></div>
 <div class="topbar">
-  <div class="brand"><span class="brand-title">Ευαγγελισμός</span><small>EL ⇄ RO · A1-A2</small></div>
+  <div class="brand"><span class="brand-title">Ευαγγελισμός</span><small>EL ⇄ RO · A1-B1</small></div>
   <div class="top-right">
     <div class="zoom-controls">
       <button class="zoom-btn zoom-out-btn" aria-label="Micșorează fontul">A−</button>
@@ -365,6 +365,12 @@
       <p><b>Doar greșeli</b>: exersează exclusiv cuvintele la care ai greșit recent.</p>
     </div>
     <div class="sheet-section help-text">
+      <div class="sheet-label">Nivelul „Antonime &amp; Sinonime"</div>
+      <p>Diferit de restul: întrebarea și toate cele 4 variante sunt <b>exclusiv în greacă</b> — direcția EL→RO/RO→EL nu se aplică aici. Vezi un cuvânt grecesc, alegi opusul (antonim) sau apropiatul ca sens (sinonim), tot în greacă.</p>
+      <p>Se poate combina cu orice alt nivel selectat — apar amestecate în aceeași rundă, fiecare card arătând clar ce i se cere (,,Găsește ANTONIMUL" / ,,Găsește SINONIMUL").</p>
+      <p>Pe cardurile din acest nivel, toate cele 4 variante primesc buton de ascultare 🔊 și link Glosbe 📖 <b>după ce alegi un răspuns</b> (când apare ștampila) — nu înainte, ca să nu influențeze alegerea.</p>
+    </div>
+    <div class="sheet-section help-text">
       <div class="sheet-label">Alte funcții utile</div>
       <p><b>Presetări rapide</b> — setează dintr-un tap o combinație de niveluri potrivită unui scop (începător, conversație, la job etc.).</p>
       <p><b>Progres pe niveluri</b> — vezi ce procent din fiecare nivel ai exersat și cât de bine.</p>
@@ -409,9 +415,10 @@
         <span class="chip level-chip" data-level="B2">B2</span>
         <span class="chip level-chip" data-level="EXT">Suplimentar</span>
         <span class="chip level-chip" data-level="MYWORDS" id="myWordsChip">Cuvintele mele (0)</span>
+        <span class="chip level-chip" data-level="ANTSYN">Antonime &amp; Sinonime</span>
         <span class="chip" id="customChip" data-level="Custom" style="opacity:0.4;">Custom (0)</span>
       </div>
-      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — A1 (650 cuvinte) și A2 (608 cuvinte) complete, B1/B2 urmează)</div>
+      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — A1 (650), A2 (608) și B1 (583) complete, B2 urmează)</div>
     </div>
 
     <div class="sheet-section">
@@ -697,12 +704,12 @@ let roundNumber = 1;
 /* ---------- storage helpers ---------- */
 async function loadStats(){
   try{
-    const raw = localStorage.getItem('wordStats');
+    const raw = localStorage.getItem('evanghelismos_wordStats');
     wordStats = raw ? JSON.parse(raw) : {};
   }catch(e){ wordStats = {}; }
 }
 async function saveStats(){
-  try{ localStorage.setItem('wordStats', JSON.stringify(wordStats)); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_wordStats', JSON.stringify(wordStats)); }catch(e){}
 }
 
 /* ---------- preferences persistence (niveluri, directie, mod, B2 scope/teme) ---------- */
@@ -713,13 +720,13 @@ function savePreferences(){
       direction: selectedDirection,
       mode: practiceMode
     };
-    localStorage.setItem('prefs', JSON.stringify(prefs));
+    localStorage.setItem('evanghelismos_prefs', JSON.stringify(prefs));
   }catch(e){}
 }
 
 function loadPreferences(){
   try{
-    const raw = localStorage.getItem('prefs');
+    const raw = localStorage.getItem('evanghelismos_prefs');
     if(!raw) return;
     const prefs = JSON.parse(raw);
     if(Array.isArray(prefs.levels) && prefs.levels.length){
@@ -743,10 +750,10 @@ function loadPreferences(){
   }catch(e){ /* preferinte corupte sau inexistente - pastram valorile implicite */ }
 }
 
-const LEVEL_LABELS = {A1:'A1', A2:'A2', B1:'B1', B2:'B2', EXT:'Suplimentar', MYWORDS:'Cuvintele mele'};
+const LEVEL_LABELS = {A1:'A1', A2:'A2', B1:'B1', B2:'B2', EXT:'Suplimentar', MYWORDS:'Cuvintele mele', ANTSYN:'Antonime & Sinonime'};
 const DIRECTION_LABELS = {mixed:'ambele direcții', 'el-ro':'EL→RO', 'ro-el':'RO→EL'};
 const MODE_LABELS = {smart:'inteligent', random:'aleator'};
-const DIRECTION_AGNOSTIC_LEVELS = new Set([]);
+const DIRECTION_AGNOSTIC_LEVELS = new Set(['ANTSYN']);
 function updateSummaryLine(){
   const el = document.getElementById('summaryLine');
   if(!el) return;
@@ -765,24 +772,24 @@ function updateSummaryLine(){
 let mistakeIds = []; // cele mai recente greseli, cele mai noi primele, fara duplicate
 async function loadMistakes(){
   try{
-    const raw = localStorage.getItem('mistakeIds');
+    const raw = localStorage.getItem('evanghelismos_mistakeIds');
     mistakeIds = raw ? JSON.parse(raw) : [];
   }catch(e){ mistakeIds = []; }
 }
 function saveMistakes(){
-  try{ localStorage.setItem('mistakeIds', JSON.stringify(mistakeIds)); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_mistakeIds', JSON.stringify(mistakeIds)); }catch(e){}
 }
 
 /* ---------- "Cuvintele mele" - lista personala, construita manual, persistenta ---------- */
 let myWords = [];
 async function loadMyWords(){
   try{
-    const raw = localStorage.getItem('myWords');
+    const raw = localStorage.getItem('evanghelismos_myWords');
     myWords = raw ? JSON.parse(raw) : [];
   }catch(e){ myWords = []; }
 }
 function saveMyWords(){
-  try{ localStorage.setItem('myWords', JSON.stringify(myWords)); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_myWords', JSON.stringify(myWords)); }catch(e){}
 }
 function updateMyWordsChipLabel(){
   const chip = document.getElementById('myWordsChip');
@@ -850,6 +857,7 @@ function allWordsById(){
   BUILTIN.forEach(w => map[w.id] = w);
   customWords.forEach(w => map[w.id] = w);
   myWords.forEach(w => map[w.id] = w);
+  ANTSYN_ENTRIES.forEach(w => map[w.id] = w);
   return map;
 }
 function csvEscape(v){
@@ -873,6 +881,7 @@ function activeWords(){
   }
   let words = BUILTIN.concat(myWords).filter(w => selectedLevels.has(w.level));
   if(customActive) words = words.concat(customWords);
+  if(selectedLevels.has('ANTSYN')) words = words.concat(ANTSYN_ENTRIES);
   return words;
 }
 
@@ -882,11 +891,11 @@ let selectedVoiceURI = '';
 
 async function loadVoicePref(){
   try{
-    selectedVoiceURI = localStorage.getItem('voiceURI') || '';
+    selectedVoiceURI = localStorage.getItem('evanghelismos_voiceURI') || '';
   }catch(e){ selectedVoiceURI = ''; }
 }
 async function saveVoicePref(uri){
-  try{ localStorage.setItem('voiceURI', uri); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_voiceURI', uri); }catch(e){}
 }
 
 function populateVoiceList(){
@@ -1022,8 +1031,69 @@ function classifyWord(word){
   return 'other'; // adjective, adverbe, alte cuvinte descriptive
 }
 
-/* ---------- module 'Antonime & Sinonime' si 'Conjugare verbe': neimplementate inca in aceasta
-   versiune (EL) - planificate ca faza separata, cu date construite specific pentru greaca. ---------- */
+/* ---------- modul 'Antonime & Sinonime' (exclusiv in greaca - directia RO<->EL nu se aplica) ---------- */
+// perechi de opuse (antonime), in greaca
+const ANTONYM_PAIRS = [
+  ["μεγάλος","μικρός"], ["καλός","κακός"], ["καινούργιος","παλιός"], ["εύκολος","δύσκολος"],
+  ["όμορφος","άσχημος"], ["φτωχός","πλούσιος"], ["δυνατός","αδύναμος"], ["γρήγορος","αργός"],
+  ["ζεστός","κρύο"], ["ανοιχτός","κλειστός"], ["ψηλός","κοντός"], ["χοντρός","λεπτός"],
+  ["καθαρός","βρώμικος"], ["γεμάτος","άδειος"], ["νέος","γέρος"], ["ζωντανός","νεκρός"],
+  ["φωτεινός","σκοτεινός"], ["δίκαιος","άδικος"], ["γενναίος","δειλός"], ["υγιής","άρρωστος"],
+  ["φιλικός","εχθρικός"], ["ήσυχος","θορυβώδης"], ["ασφαλής","επικίνδυνος"], ["αληθινός","ψεύτικος"],
+  ["πρώτος","τελευταίος"], ["πάνω","κάτω"], ["μέσα","έξω"], ["αριστερά","δεξιά"],
+  ["εδώ","εκεί"], ["πριν","μετά"], ["πολύ","λίγο"], ["ναι","όχι"],
+  ["αρχή","τέλος"], ["ζωή","θάνατος"], ["φίλος","εχθρός"], ["αγάπη","μίσος"],
+  ["μέρα","νύχτα"], ["καλοκαίρι","χειμώνας"], ["μπροστά","πίσω"], ["ελεύθερος","κλειστός"],
+  ["σίγουρος","ύποπτος"], ["φτηνός","ακριβός"], ["δημόσιος","ιδιωτικός"], ["εύκολος","περίπλοκος"],
+  ["ισχυρός","αδύναμος"], ["παλιός","σύγχρονος"], ["σωστός","λάθος"], ["χαρούμενος","λυπημένος"],
+  ["φωνάζω","ψιθυρίζω"], ["ανεβαίνω","κατεβαίνω"], ["αρχίζω","τελειώνω"], ["ανοίγω","κλείνω"],
+  ["δίνω","παίρνω"], ["αγοράζω","πουλάω"], ["θυμάμαι","ξεχνάω"], ["βρίσκω","χάνω"],
+  ["κερδίζω","χάνω"], ["γεννιέμαι","πεθαίνω"], ["ρωτάω","απαντάω"]
+];
+// perechi de sinonime (sens apropiat), in greaca
+const SYNONYM_PAIRS = [
+  ["όμορφος","ωραίος"], ["χαρούμενος","ευτυχισμένος"], ["δουλειά","εργασία"],
+  ["αρχίζω","ξεκινάω"], ["ξέρω","γνωρίζω"], ["θέλω","επιθυμώ"], ["δρόμος","οδός"],
+  ["χαρά","ευτυχία"], ["φόβος","τρόμος"], ["πρόβλημα","ζήτημα"], ["τελειώνω","ολοκληρώνω"],
+  ["μεγάλος","τεράστιος"], ["αγαπώ","λατρεύω"], ["δουλεύω","εργάζομαι"], ["δίνω","προσφέρω"],
+  ["νομίζω","πιστεύω"], ["ζητώ","απαιτώ"], ["σπίτι","κατοικία"], ["γρήγορος","ταχύς"],
+  ["μεγάλος","μεγαλόσωμος"]
+];
+
+function buildAntSynEntries(){
+  const entries = [];
+  let n = 1;
+  ANTONYM_PAIRS.forEach(([a,b])=>{
+    entries.push({id:`ANTSYN-${n++}`, level:'ANTSYN', type:'antonym', prompt:a, answer:b});
+    entries.push({id:`ANTSYN-${n++}`, level:'ANTSYN', type:'antonym', prompt:b, answer:a});
+  });
+  SYNONYM_PAIRS.forEach(([a,b])=>{
+    entries.push({id:`ANTSYN-${n++}`, level:'ANTSYN', type:'synonym', prompt:a, answer:b});
+    entries.push({id:`ANTSYN-${n++}`, level:'ANTSYN', type:'synonym', prompt:b, answer:a});
+  });
+  return entries;
+}
+const ANTSYN_ENTRIES = buildAntSynEntries();
+// pool de cuvinte grecesti distincte folosite in perechi, pt generarea distractorilor
+const ANTSYN_WORD_POOL = Array.from(new Set(ANTSYN_ENTRIES.map(e => e.prompt)));
+
+function buildAntSynQuestion(entry){
+  const others = shuffle(ANTSYN_WORD_POOL.filter(w => w !== entry.prompt && w !== entry.answer));
+  const distractors = others.slice(0, 3);
+  const correct = { value: entry.answer, html: escapeHtml(entry.answer) };
+  const optionValues = shuffle([entry.answer, ...distractors]);
+  const options = optionValues.map(v => ({ value: v, html: escapeHtml(v) }));
+  const label = entry.type === 'antonym' ? 'Găsește ANTONIMUL' : 'Găsește SINONIMUL';
+  return {
+    id: entry.id,
+    prompt: { value: entry.prompt, html: escapeHtml(entry.prompt) },
+    correct, options,
+    promptSide: 'de', answerSide: 'de', // exclusiv greaca - activeaza iconitele de ascultare/Glosbe ca la restul
+    greekText: entry.prompt,
+    direction: 'EL',
+    questionLabel: label
+  };
+}
 
 function buildRound(){
   updateSummaryLine();
@@ -1040,6 +1110,8 @@ function buildRound(){
   pool = practiceMode === 'smart' ? weightedSample(words, size) : shuffle(words).slice(0, size);
 
   roundQuestions = pool.map(word => {
+    if(word.level === 'ANTSYN') return buildAntSynQuestion(word);
+
     let elToRo;
     if(selectedDirection === 'el-ro') elToRo = true;
     else if(selectedDirection === 'ro-el') elToRo = false;
@@ -1049,7 +1121,7 @@ function buildRound(){
     const answerSide = elToRo ? 'ro' : 'de';
     const prompt = formatSide(word, promptSide);
     const correct = formatSide(word, answerSide);
-    const others = shuffle(words.filter(w => w.id !== word.id));
+    const others = shuffle(words.filter(w => w.id !== word.id && w.level !== 'ANTSYN'));
     const wordCategory = classifyWord(word);
     const sameCategory = others.filter(o => classifyWord(o) === wordCategory);
     const candidatePools = [sameCategory, others]; // incercam mai intai aceeasi categorie, apoi relaxam
@@ -1461,7 +1533,7 @@ document.getElementById('exportMyWordsBtn').addEventListener('click', ()=>{
 });
 
 /* ---------- backup complet (statistici + preferinte + greseli + streak), ca fisier .json ---------- */
-const BACKUP_KEYS = ['wordStats', 'prefs', 'mistakeIds', 'streak', 'voiceURI', 'myWords'];
+const BACKUP_KEYS = ['evanghelismos_wordStats', 'evanghelismos_prefs', 'evanghelismos_mistakeIds', 'evanghelismos_streak', 'evanghelismos_voiceURI', 'evanghelismos_myWords'];
 document.getElementById('backupExportBtn').addEventListener('click', ()=>{
   const backup = { _app: 'Evanghelismos', _version: 1, _exportedAt: new Date().toISOString(), data: {} };
   BACKUP_KEYS.forEach(key=>{
@@ -1488,6 +1560,11 @@ document.getElementById('backupFileInput').addEventListener('change', (e)=>{
       const parsed = JSON.parse(reader.result);
       if(!parsed || parsed._app !== 'Evanghelismos' || !parsed.data){
         status.textContent = 'Fișierul nu pare un backup valid Ευαγγελισμός.';
+        return;
+      }
+      const hasAnyPrefixedKey = BACKUP_KEYS.some(key => parsed.data[key] !== undefined);
+      if(!hasAnyPrefixedKey){
+        status.textContent = 'Acest backup e dintr-o versiune veche (dinainte de separarea datelor între aplicații) și nu mai e compatibil — ar putea conține date amestecate. Nu a fost restaurat nimic.';
         return;
       }
       const confirmMsg = `Restaurezi backup din ${parsed._exportedAt ? parsed._exportedAt.slice(0,10) : 'dată necunoscută'}? Progresul curent va fi suprascris.`;
@@ -1789,11 +1866,11 @@ function isIOSDevice(){
   return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 function installDismissed(){
-  try{ return localStorage.getItem('installBannerDismissed') === '1'; }catch(e){ return false; }
+  try{ return localStorage.getItem('evanghelismos_installBannerDismissed') === '1'; }catch(e){ return false; }
 }
 function dismissInstallBanner(){
   installBanner.style.display = 'none';
-  try{ localStorage.setItem('installBannerDismissed', '1'); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_installBannerDismissed', '1'); }catch(e){}
 }
 
 function refreshInstallUI(){
@@ -1856,13 +1933,13 @@ installBannerClose.addEventListener('click', dismissInstallBanner);
 function updateStreak(){
   try{
     const today = new Date().toISOString().slice(0,10);
-    const raw = localStorage.getItem('streak');
+    const raw = localStorage.getItem('evanghelismos_streak');
     let streak = raw ? JSON.parse(raw) : {count:0, lastDate:null};
     if(streak.lastDate !== today){
       const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
       streak.count = (streak.lastDate === yesterday) ? streak.count + 1 : 1;
       streak.lastDate = today;
-      localStorage.setItem('streak', JSON.stringify(streak));
+      localStorage.setItem('evanghelismos_streak', JSON.stringify(streak));
     }
     return streak;
   }catch(e){ return {count:0, lastDate:null}; }
@@ -1873,7 +1950,7 @@ function renderLevelProgress(){
   const el = document.getElementById('levelProgress');
   if(!el) return;
   const byLevel = {};
-  BUILTIN.concat(myWords).forEach(w=>{
+  BUILTIN.concat(myWords).concat(ANTSYN_ENTRIES).forEach(w=>{
     if(!byLevel[w.level]) byLevel[w.level] = {total:0, attempted:0, correctSum:0, attemptSum:0};
     byLevel[w.level].total++;
     const s = wordStats[w.id];
@@ -1883,7 +1960,7 @@ function renderLevelProgress(){
       byLevel[w.level].attemptSum += s.attempts;
     }
   });
-  const order = ['A1','A2','B1','B2','EXT','MYWORDS'];
+  const order = ['A1','A2','B1','B2','EXT','MYWORDS','ANTSYN'];
   let html = '';
   order.forEach(lvl=>{
     const d = byLevel[lvl];
@@ -1903,14 +1980,14 @@ const ZOOM_MIN = 0.85, ZOOM_MAX = 1.7, ZOOM_STEP = 0.1, ZOOM_DEFAULT = 1;
 let fontZoom = 1;
 function loadZoom(){
   try{
-    const raw = localStorage.getItem('fontZoom');
+    const raw = localStorage.getItem('evanghelismos_fontZoom');
     fontZoom = raw ? parseFloat(raw) : ZOOM_DEFAULT;
     if(!fontZoom || isNaN(fontZoom)) fontZoom = ZOOM_DEFAULT;
   }catch(e){ fontZoom = ZOOM_DEFAULT; }
 }
 function applyZoom(){
   document.documentElement.style.fontSize = (16 * fontZoom) + 'px';
-  try{ localStorage.setItem('fontZoom', String(fontZoom)); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_fontZoom', String(fontZoom)); }catch(e){}
   document.querySelectorAll('.zoom-percent').forEach(el => el.textContent = Math.round(fontZoom * 100) + '%');
 }
 document.querySelectorAll('.zoom-in-btn').forEach(btn=>{
@@ -1934,10 +2011,10 @@ document.querySelectorAll('.zoom-reset-btn').forEach(btn=>{
 
 /* ---------- AI (Claude) - Faza 0: doar cheie + test de conexiune ---------- */
 function loadClaudeKey(){
-  try{ return localStorage.getItem('claudeApiKey') || ''; }catch(e){ return ''; }
+  try{ return localStorage.getItem('evanghelismos_claudeApiKey') || ''; }catch(e){ return ''; }
 }
 function saveClaudeKey(key){
-  try{ localStorage.setItem('claudeApiKey', key); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_claudeApiKey', key); }catch(e){}
 }
 const claudeKeyInput = document.getElementById('claudeApiKeyInput');
 claudeKeyInput.value = loadClaudeKey();
@@ -2177,10 +2254,10 @@ function parseTaggedAiResult(raw){
 
 /* ---------- AI: istoric traduceri ---------- */
 function loadAiHistory(){
-  try{ return JSON.parse(localStorage.getItem('aiHistory') || '[]'); }catch(e){ return []; }
+  try{ return JSON.parse(localStorage.getItem('evanghelismos_aiHistory') || '[]'); }catch(e){ return []; }
 }
 function saveAiHistory(hist){
-  try{ localStorage.setItem('aiHistory', JSON.stringify(hist)); }catch(e){}
+  try{ localStorage.setItem('evanghelismos_aiHistory', JSON.stringify(hist)); }catch(e){}
 }
 function saveAiHistoryEntry(originalText, rawTranslatedText, source){
   const hist = loadAiHistory();
