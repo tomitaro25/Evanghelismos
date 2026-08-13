@@ -4,10 +4,13 @@ Aplicație dedicată părintelui Daniel.
 
 Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web App) instalabilă pe telefon.
 
-**⚠️ Versiune de test (v3)** — vocabularul conține momentan 794 de cuvinte (650 A1 + 144 început de A2), construite din rangurile de frecvență ~1-2500 ale limbii grecești moderne. Nivelurile B1/B2 nu sunt încă populate. Modulele „Antonime & Sinonime" și „Conjugare verbe" (prezente în aplicația soră de germană) nu sunt încă implementate — sunt planificate pentru o fază separată, cu date construite specific pentru greacă.
+**⚠️ Versiune de test (v5)** — vocabularul conține 1258 de cuvinte: A1 complet (650) și A2 complet (608), construite din rangurile de frecvență ~1-5000 ale limbii grecești moderne. Nivelurile B1/B2 nu sunt încă populate. Modulele „Antonime & Sinonime" și „Conjugare verbe" (prezente în aplicația soră de germană) nu sunt încă implementate — sunt planificate pentru o fază separată, cu date construite specific pentru greacă.
 
 ## Istoric versiuni
 
+- **v7** — Corectat bara de sus: fix-ul din v4 ascundea complet controalele de zoom pe ecrane înguste (prea agresiv); acum A−/A+ rămân mereu vizibile pe pagina principală, doar procentul și butonul de resetare (mai puțin esențiale) se ascund sub 420px lățime, ca să nu mai împingă Setările pe rândul următor. Butoanele de zoom din Setări au fost verificate programatic (simulare de click real) și funcționează corect din punct de vedere logic — dacă tot par nefuncționale la testare, cel mai probabil cache-ul service worker-ului servește o versiune veche; e nevoie de reinstalare completă (dezinstalare + instalare din nou) sau golire cache browser, nu doar reîncărcare simplă a paginii.
+- **v6** — Corectat ștampila de răspuns: varianta pentru răspuns greșit era în română (,,GREȘIT"), inconsecventă cu cea corectă (,,ΣΩΣΤΟ!", în greacă). Acum ambele sunt în greacă: `ΣΩΣΤΟ!` / `ΛΑΘΟΣ!`.
+- **v5** — Vocabular A1 și A2 complete (1258 cuvinte total: 650 A1 + 608 A2), aliniat ca volum cu aplicația germană (669 A1 / 591 A2). Procesate rangurile de frecvență ~2500–5000 pentru finalizarea A2. Datele pentru B1 sunt deja extrase, pregătite pentru lotul următor.
 - **v4** — Corectat layout-ul barei de sus pe telefoane Android: numele lung al aplicației (Ευαγγελισμός) împingea butonul de Setări (⚙) pe un rând nou, micșorând spațiul aplicației. Numele se trunchiază acum cu „..." dacă nu încape, iar pe ecrane înguste (sub 420px) controalele de zoom din bara de sus se ascund (rămân identic disponibile în Setări) — mic/AI/setări rămân mereu pe același rând.
 - **v3** — Vocabular extins: de la 178 la 794 de cuvinte (650 A1 + 144 început de A2), lematizate și traduse manual din rangurile de frecvență 400–2500. Adăugată funcția de detectare a vocii grecești lipsă din sistem, cu ghidare specifică per platformă (Windows/Android — deschidere directă a ecranului de setări; iOS/macOS — instrucțiuni text, din limitări de browser).
 - **v2** — Redenumire completă: Ευαγγελισμός (Buna Vestire), dedicată părintelui Daniel. Corectate bug-uri de portare rămase (clasele CSS de gen nu se mapau corect la ο/η/το, referințe reziduale „DE"/„7000 de cuvinte" moștenite din aplicația germană, în secțiunea de Ajutor).
@@ -16,7 +19,7 @@ Aplicație de exersat vocabular grec-român, sub formă de PWA (Progressive Web 
 ## Ce conține
 
 - `index.html` — aplicația
-- `vocab-data.js` — baza de vocabular (A1: 650 cuvinte, A2: 144 cuvinte — versiune de test, în extindere)
+- `vocab-data.js` — baza de vocabular (A1: 650 cuvinte, A2: 608 cuvinte — complete; B1/B2 urmează)
 - `manifest.json` — configurare PWA (nume, iconițe, mod de afișare)
 - `sw.js` — service worker (funcționare offline)
 - `icon-192.png`, `icon-512.png` (+ variante maskable) — iconițele aplicației, cu accent pe steagul elen (albastru-alb)
@@ -37,7 +40,7 @@ Aceleași funcționalități de bază ca aplicația soră **Karteikarten** (germ
 
 ## Ce lipsește față de aplicația germană (intenționat, fază separată)
 
-- Nivelurile B1/B2/Suplimentar (A1 și început de A2 populate momentan)
+- Nivelurile B1/B2/Suplimentar (A1 și A2 complete populate momentan)
 - Modulul „Antonime & Sinonime"
 - Modulul „Conjugare verbe"
 - Vocabular de specialitate (echivalentul „Îngrijire" din aplicația germană)

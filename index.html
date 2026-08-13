@@ -76,7 +76,7 @@
   /* pe ecrane inguste (majoritatea telefoanelor Android), ascundem controalele de zoom din bara de sus -
      raman disponibile identic in Setari - ca sa incapa mereu mic/AI/setari pe acelasi rand */
   @media (max-width: 420px){
-    .topbar .zoom-controls{ display:none; }
+    .topbar .zoom-percent, .topbar .zoom-reset-btn{ display:none; }
     .brand{ font-size:16px; }
     .top-right{ gap:4px; }
     .stats{ font-size:9.5px; }
@@ -411,7 +411,7 @@
         <span class="chip level-chip" data-level="MYWORDS" id="myWordsChip">Cuvintele mele (0)</span>
         <span class="chip" id="customChip" data-level="Custom" style="opacity:0.4;">Custom (0)</span>
       </div>
-      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — A1 (650 cuvinte) și început de A2 (144 cuvinte) populate momentan, B1/B2 urmează)</div>
+      <div class="upload-status" style="margin-top:8px;">Niveluri A1–B2 pe bază de frecvență reală · „Suplimentar" = cuvinte în afara topului celor mai frecvente 50.000 · (versiune de test — A1 (650 cuvinte) și A2 (608 cuvinte) complete, B1/B2 urmează)</div>
     </div>
 
     <div class="sheet-section">
@@ -1182,7 +1182,7 @@ function handleAnswer(btn, q){
 
   const stamp = document.getElementById('stamp');
   const card = document.getElementById('card');
-  stamp.textContent = isCorrect ? 'ΣΩΣΤΟ!' : 'GREȘIT';
+  stamp.textContent = isCorrect ? 'ΣΩΣΤΟ!' : 'ΛΑΘΟΣ!';
   stamp.classList.add(isCorrect ? 'ok' : 'no');
   // pozitionam stampila DEASUPRA primei variante de raspuns (niciodata peste ea) -
   // corectitudinea e oricum aratata clar prin bordura verde/rosie a variantelor
